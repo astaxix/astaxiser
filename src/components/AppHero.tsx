@@ -5,28 +5,31 @@ import { motion } from 'motion/react';
 import Button from '@/components/AppButton';
 import { Phone, Mail, MessageCircle, Calendar } from 'lucide-react';
 import { CONTACT_INFO } from '@/constants';
-import { storage, ref, getDownloadURL } from '@/firebase';
 
 interface HeroProps {
     onOpenBooking?: () => void;
 }
 
 const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
-  // Wir verwenden das lokale Bild aus den Systemdateien (public Ordner) als Fallback
+  // Wir verwenden das lokale Bild als initialen Fallback, da die Vercel URL privat ist
   const [imageUrl, setImageUrl] = useState<string>("/hero-taxi.png");
 
   useEffect(() => {
+    console.log("AppHero: Initial image URL: /hero-taxi.png");
     const fetchHeroUrl = async () => {
       try {
         const response = await fetch('/api/blob/hero-url');
         if (response.ok) {
           const data = await response.json();
+          console.log("AppHero: Blob API response:", data);
           if (data.url) {
             setImageUrl(data.url);
           }
+        } else {
+          console.warn("AppHero: Blob API failed with status:", response.status);
         }
       } catch (error) {
-        console.error("Error fetching hero image from Vercel Blob:", error);
+        console.error("AppHero: Error fetching hero image from Vercel Blob:", error);
       }
     };
 
@@ -44,6 +47,15 @@ const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
               src={imageUrl} 
               alt="AS Taxi Hero" 
               className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+              crossOrigin="anonymous"
+              onError={(e) => {
+                console.error("AppHero: Image failed to load:", imageUrl);
+                // Fallback to local if the remote URL fails
+                if (imageUrl !== "/hero-taxi.png") {
+                  setImageUrl("/hero-taxi.png");
+                }
+              }}
             />
           )}
           {/* Dark Vignette Overlay */}

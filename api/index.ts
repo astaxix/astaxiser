@@ -42,25 +42,80 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", env: process.env.NODE_ENV });
 });
 
+app.get("/api/blob/debug", async (req, res) => {
+  try {
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+    if (!token) {
+      return res.json({ success: false, message: "Token missing" });
+    }
+    const { blobs } = await list({ token });
+    res.json({ 
+      success: true, 
+      tokenPrefix: token.substring(0, 15) + "...",
+      blobCount: blobs.length,
+      blobs: blobs.map(b => ({ pathname: b.pathname, url: b.url }))
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.get("/api/blob/proxy", async (req, res) => {
+  const { url } = req.query;
+  if (!url || typeof url !== 'string') return res.status(400).send("URL required");
+  
+  try {
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+    // Vercel private blobs can be fetched using the token in the Authorization header
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    if (!response.ok) throw new Error(`Failed to fetch blob: ${response.statusText}`);
+    
+    const contentType = response.headers.get('content-type');
+    if (contentType) res.setHeader('Content-Type', contentType);
+    
+    const arrayBuffer = await response.arrayBuffer();
+    res.send(Buffer.from(arrayBuffer));
+  } catch (error: any) {
+    console.error("Blob Proxy Error:", error);
+    res.status(500).send(error.message);
+  }
+});
+
 app.get("/api/blob/hero-url", async (req, res) => {
   try {
     const token = process.env.BLOB_READ_WRITE_TOKEN;
     
     if (!token) {
-      console.warn("Vercel Blob: BLOB_READ_WRITE_TOKEN is not defined in environment variables.");
       return res.status(400).json({ 
         success: false, 
-        message: "BLOB_READ_WRITE_TOKEN is missing. Please add it to your environment variables in AI Studio Settings." 
+        message: "BLOB_READ_WRITE_TOKEN is missing." 
       });
     }
 
     const { blobs } = await list({ token });
-    const heroBlob = blobs.find(b => b.pathname.includes('hero-taxi.png'));
+    
+    // Try to find by name
+    let heroBlob = blobs.find(b => b.pathname.toLowerCase().includes('hero-taxi'));
+    
+    if (!heroBlob) {
+      heroBlob = blobs.find(b => b.pathname.match(/\.(png|jpg|jpeg|webp)$/i));
+    }
     
     if (heroBlob) {
-      res.json({ url: heroBlob.url });
+      // If it's a private blob, we serve it through our proxy
+      const isPrivate = heroBlob.url.includes('.private.');
+      const finalUrl = isPrivate 
+        ? `/api/blob/proxy?url=${encodeURIComponent(heroBlob.url)}`
+        : heroBlob.url;
+        
+      res.json({ url: finalUrl });
     } else {
-      res.status(404).json({ success: false, message: "Hero image 'hero-taxi.png' not found in Vercel Blob storage." });
+      res.status(404).json({ success: false, message: "No suitable image found." });
     }
   } catch (error: any) {
     console.error("Vercel Blob Error:", error);
