@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Star, MessageSquare, User, Trash2, Edit2, Send, X, Loader2, CheckCircle } from 'lucide-react';
 import { Review } from '@/types';
-import Button from '@/components/AppButton';
+import Button from '@/components/AppButton.tsx';
 import { db, collection, onSnapshot, query, orderBy, addDoc, deleteDoc, doc, updateDoc, handleFirestoreError, OperationType } from '@/firebase';
 
 interface GuestbookProps {

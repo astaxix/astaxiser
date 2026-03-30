@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, MapPin, Navigation, Calendar, Clock, ArrowRight, CheckCircle, ShoppingBag, Plane, Package, Heart, GraduationCap, Bus, Accessibility, ArrowUpDown, CreditCard, Wallet, Landmark, Search, ShieldCheck, Loader2, MailCheck, AlertCircle, Phone, LocateFixed } from 'lucide-react';
-import Button from '@/components/AppButton';
-import LiveMap from '@/components/AppLiveMap';
-import Logo from '@/components/AppLogo';
+import Button from '@/components/AppButton.tsx';
+import LiveMap from '@/components/AppLiveMap.tsx';
+import Logo from '@/components/AppLogo.tsx';
 import { BookingDetails, BookingServiceOption, PaymentMethod } from '@/types';
 import { fetchPlaceSuggestions } from '@/services/locationService';
 import { sendBookingEmailToOwner, sendBookingEmailToCustomer } from '@/services/emailService';
