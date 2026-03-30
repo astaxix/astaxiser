@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Star } from 'lucide-react';
-import Logo from '@/components/AppLogo.tsx';
+import Logo from '@/components/AppLogo';
 import { db, doc, getDoc } from '@/firebase';
 
 interface PreloaderProps {
@@ -16,7 +16,6 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   const [stats, setStats] = useState({ rating: 5.0, count: 258 });
 
   useEffect(() => {
-    console.log('Preloader useEffect running');
     if (hasShownPreloader) {
       if (onComplete) onComplete();
       return;
@@ -41,7 +40,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       setTimeout(() => {
         if (onComplete) onComplete();
       }, 500);
-    }, 2000);
+    }, 1200);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
