@@ -1,41 +1,72 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import L from 'leaflet';
 
 interface LiveMapProps {
-  pickup?: string;
-  destination?: string;
-  className?: string;
+  pickupCoords?: { lat: number; lng: number } | null;
+  destinationCoords?: { lat: number; lng: number } | null;
 }
 
-const LiveMap: React.FC<LiveMapProps> = ({
-  pickup,
-  destination,
-  className = "h-full w-full"
-}) => {
-  const companyAddress = "Espenschiedstraße 1, 55411 Bingen am Rhein, Germany";
+const LiveMap: React.FC<LiveMapProps> = ({ pickupCoords, destinationCoords }) => {
+  const mapRef = useRef<L.Map | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const markersRef = useRef<L.Marker[]>([]);
 
-  const startPoint = pickup?.trim() ? pickup : companyAddress;
-  const endPoint = destination?.trim() ? destination : "";
+  useEffect(() => {
+    if (mapContainerRef.current && !mapRef.current) {
+      // Initialize map
+      mapRef.current = L.map(mapContainerRef.current).setView([49.967, 7.896], 11); // Bingen coordinates, zoomed out
 
-  const searchQuery = endPoint
-    ? `${startPoint} to ${endPoint}`
-    : startPoint;
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors & CartoDB'
+      }).addTo(mapRef.current);
+    }
 
-  const encodedQuery = encodeURIComponent(searchQuery);
+    // Ensure size is valid after mount with a delay to allow container to render
+    const timer = setTimeout(() => {
+      mapRef.current?.invalidateSize();
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, []);
 
-  return (
-    <div className={`overflow-hidden rounded-[30px] bg-gray-100 border border-gray-200 ${className}`}>
-      <iframe
-        title="Live Map"
-        width="100%"
-        height="100%"
-        style={{ border: 0 }}
-        loading="lazy"
-        allowFullScreen
-        referrerPolicy="no-referrer-when-downgrade"
-        src={`https://www.google.com/maps?q=${encodedQuery}&output=embed`}
-      />
-    </div>
-  );
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.invalidateSize();
+    }
+  }, [pickupCoords, destinationCoords]);
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    // Clear existing markers
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
+
+    // Add markers
+    if (pickupCoords) {
+      const marker = L.marker([pickupCoords.lat, pickupCoords.lng]).addTo(mapRef.current)
+        .bindPopup('Abholung');
+      markersRef.current.push(marker);
+    }
+    if (destinationCoords) {
+      const marker = L.marker([destinationCoords.lat, destinationCoords.lng]).addTo(mapRef.current)
+        .bindPopup('Ziel');
+      markersRef.current.push(marker);
+    }
+
+    // Fit bounds
+    if (pickupCoords && destinationCoords) {
+      const bounds = L.latLngBounds([
+        [pickupCoords.lat, pickupCoords.lng],
+        [destinationCoords.lat, destinationCoords.lng]
+      ]);
+      mapRef.current.fitBounds(bounds, { padding: [50, 50] });
+    } else if (pickupCoords) {
+      mapRef.current.setView([pickupCoords.lat, pickupCoords.lng], 15);
+    }
+  }, [pickupCoords, destinationCoords]);
+
+  return <div ref={mapContainerRef} className="w-full h-full z-0" />;
 };
 
 export default LiveMap;
