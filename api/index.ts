@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
+import { list } from "@vercel/blob";
 
 dotenv.config();
 
@@ -39,6 +40,32 @@ const transporter = null;
 // API Routes
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", env: process.env.NODE_ENV });
+});
+
+app.get("/api/blob/hero-url", async (req, res) => {
+  try {
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+    
+    if (!token) {
+      console.warn("Vercel Blob: BLOB_READ_WRITE_TOKEN is not defined in environment variables.");
+      return res.status(400).json({ 
+        success: false, 
+        message: "BLOB_READ_WRITE_TOKEN is missing. Please add it to your environment variables in AI Studio Settings." 
+      });
+    }
+
+    const { blobs } = await list({ token });
+    const heroBlob = blobs.find(b => b.pathname.includes('hero-taxi.png'));
+    
+    if (heroBlob) {
+      res.json({ url: heroBlob.url });
+    } else {
+      res.status(404).json({ success: false, message: "Hero image 'hero-taxi.png' not found in Vercel Blob storage." });
+    }
+  } catch (error: any) {
+    console.error("Vercel Blob Error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 app.post("/api/send-email", async (req, res) => {

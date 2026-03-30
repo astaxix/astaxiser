@@ -12,8 +12,26 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
-  // Wir verwenden das lokale Bild aus den Systemdateien (public Ordner)
-  const imageUrl = "/hero-taxi.png";
+  // Wir verwenden das lokale Bild aus den Systemdateien (public Ordner) als Fallback
+  const [imageUrl, setImageUrl] = useState<string>("/hero-taxi.png");
+
+  useEffect(() => {
+    const fetchHeroUrl = async () => {
+      try {
+        const response = await fetch('/api/blob/hero-url');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.url) {
+            setImageUrl(data.url);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching hero image from Vercel Blob:", error);
+      }
+    };
+
+    fetchHeroUrl();
+  }, []);
 
   return (
     <section id="home" className="relative overflow-visible">
