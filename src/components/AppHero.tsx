@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import Button from '@/components/AppButton.tsx';
@@ -7,57 +6,26 @@ import { Phone, Mail, MessageCircle, Calendar } from 'lucide-react';
 import { CONTACT_INFO } from '@/constants';
 
 interface HeroProps {
-    onOpenBooking?: () => void;
+  onOpenBooking?: () => void;
 }
 
 const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
-  // Wir verwenden das lokale Bild als initialen Fallback, da die Vercel URL privat ist
-  const [imageUrl, setImageUrl] = useState<string>("/hero-taxi.png");
-
-  useEffect(() => {
-    console.log("AppHero: Initial image URL: /hero-taxi.png");
-    const fetchHeroUrl = async () => {
-      try {
-        const response = await fetch('/api/blob/hero-url');
-        if (response.ok) {
-          const data = await response.json();
-          console.log("AppHero: Blob API response:", data);
-          if (data.url) {
-            setImageUrl(data.url);
-          }
-        } else {
-          console.warn("AppHero: Blob API failed with status:", response.status);
-        }
-      } catch (error) {
-        console.error("AppHero: Error fetching hero image from Vercel Blob:", error);
-      }
-    };
-
-    fetchHeroUrl();
-  }, []);
 
   return (
     <section id="home" className="relative overflow-visible">
       {/* Hero Section with Background */}
       <div className="relative w-full flex flex-col items-center">
-        {/* Background Image - Covers only the hero content part */}
+        
+        {/* Background Image */}
         <div className="absolute top-0 left-0 w-full h-full z-0 bg-gray-900">
-          {imageUrl && (
-            <img 
-              src={imageUrl} 
-              alt="AS Taxi Hero" 
-              className="w-full h-full object-cover"
-              referrerPolicy="no-referrer"
-              crossOrigin="anonymous"
-              onError={(e) => {
-                console.error("AppHero: Image failed to load:", imageUrl);
-                // Fallback to local if the remote URL fails
-                if (imageUrl !== "/hero-taxi.png") {
-                  setImageUrl("/hero-taxi.png");
-                }
-              }}
-            />
-          )}
+
+          {/* ✅ LOCAL IMAGE FROM /public */}
+          <img
+            src="/hero-taxi.png"
+            alt="AS Taxi Hero"
+            className="w-full h-full object-cover"
+          />
+
           {/* Dark Vignette Overlay */}
           <div className="absolute inset-0 bg-black/40"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
@@ -80,8 +48,12 @@ const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
           </h1>
           
           <div className="mb-10 md:mb-14">
-              <span className="text-lg md:text-3xl font-light block">aus Bingen am Rhein –</span>
-              <span className="text-lg md:text-3xl font-bold block text-secondary uppercase tracking-widest mt-2">Zentrale am Stadtbahnhof</span>
+            <span className="text-lg md:text-3xl font-light block">
+              aus Bingen am Rhein –
+            </span>
+            <span className="text-lg md:text-3xl font-bold block text-secondary uppercase tracking-widest mt-2">
+              Zentrale am Stadtbahnhof
+            </span>
           </div>
           
           <p className="max-w-3xl mx-auto text-gray-200 text-sm md:text-base leading-relaxed mb-10 md:mb-14 hidden sm:block font-light">
@@ -95,6 +67,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
                 Was gibts neues?
               </Button>
             </Link>
+
             <Link to="/#guestbook" className="inline-block">
               <Button 
                 variant="outline" 
@@ -107,77 +80,90 @@ const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
         </motion.div>
       </div>
 
-      {/* Contact & Booking Options Area - On Light Gray Background */}
+      {/* Contact & Booking Options Area */}
       <div className="relative z-10 w-full bg-[#f8f9fa] pt-12 md:pt-16 pb-8 md:pb-10 px-6">
-          <div className="container mx-auto max-w-6xl bg-white p-8 md:p-12 rounded-sm shadow-2xl border border-gray-100">
-            <div className="text-center mb-10">
-              <h3 className="text-2xl md:text-3xl font-black text-black uppercase tracking-tighter mb-2">Sie brauchen ein Taxi?</h3>
-              <p className="text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.3em]">Wählen Sie Ihre bevorzugte Option</p>
-            </div>
+        <div className="container mx-auto max-w-6xl bg-white p-8 md:p-12 rounded-sm shadow-2xl border border-gray-100">
+          
+          <div className="text-center mb-10">
+            <h3 className="text-2xl md:text-3xl font-black text-black uppercase tracking-tighter mb-2">
+              Sie brauchen ein Taxi?
+            </h3>
+            <p className="text-gray-400 text-[10px] md:text-xs font-bold uppercase tracking-[0.3em]">
+              Wählen Sie Ihre bevorzugte Option
+            </p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              
-              {/* 1. Online Buchen */}
-              <button 
-                onClick={onOpenBooking}
-                className="bg-secondary w-full p-5 rounded-sm text-center group transition-all duration-300 hover:bg-[#d17a1a] shadow-md flex items-center justify-between px-8"
-              >
-                <div className="flex items-center gap-4">
-                  <Calendar size={20} className="text-white" />
-                  <span className="text-white font-black text-sm uppercase tracking-widest">Online Buchen</span>
-                </div>
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white group-hover:bg-white group-hover:text-secondary transition-all">
-                  <span className="text-lg">→</span>
-                </div>
-              </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            {/* Online Buchen */}
+            <button 
+              onClick={onOpenBooking}
+              className="bg-secondary w-full p-5 rounded-sm text-center group transition-all duration-300 hover:bg-[#d17a1a] shadow-md flex items-center justify-between px-8"
+            >
+              <div className="flex items-center gap-4">
+                <Calendar size={20} className="text-white" />
+                <span className="text-white font-black text-sm uppercase tracking-widest">
+                  Online Buchen
+                </span>
+              </div>
+              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white group-hover:bg-white group-hover:text-secondary transition-all">
+                <span className="text-lg">→</span>
+              </div>
+            </button>
 
-              {/* 2. Anruf */}
-              <a 
-                href={`tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`}
-                className="bg-black w-full p-5 rounded-sm text-center group transition-all duration-300 hover:bg-gray-900 shadow-md flex items-center justify-between px-8"
-              >
-                <div className="flex items-center gap-4">
-                  <Phone size={20} className="text-white" />
-                  <span className="text-white font-black text-sm uppercase tracking-widest">Anrufen</span>
-                </div>
-                <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white group-hover:bg-secondary transition-all">
-                  <span className="text-lg">→</span>
-                </div>
-              </a>
+            {/* Anruf */}
+            <a 
+              href={`tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`}
+              className="bg-black w-full p-5 rounded-sm text-center group transition-all duration-300 hover:bg-gray-900 shadow-md flex items-center justify-between px-8"
+            >
+              <div className="flex items-center gap-4">
+                <Phone size={20} className="text-white" />
+                <span className="text-white font-black text-sm uppercase tracking-widest">
+                  Anrufen
+                </span>
+              </div>
+              <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white group-hover:bg-secondary transition-all">
+                <span className="text-lg">→</span>
+              </div>
+            </a>
 
-              {/* 3. WhatsApp */}
-              <a 
-                href={`https://wa.me/${CONTACT_INFO.mobile.replace(/[^0-9]/g, '')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#25D366] w-full p-5 rounded-sm text-center group transition-all duration-300 hover:bg-[#1eb954] shadow-md flex items-center justify-between px-8"
-              >
-                <div className="flex items-center gap-4">
-                  <MessageCircle size={20} className="text-white" />
-                  <span className="text-white font-black text-sm uppercase tracking-widest">WhatsApp Chat</span>
-                </div>
-                <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white group-hover:bg-white group-hover:text-[#25D366] transition-all">
-                  <span className="text-lg">→</span>
-                </div>
-              </a>
+            {/* WhatsApp */}
+            <a 
+              href={`https://wa.me/${CONTACT_INFO.mobile.replace(/[^0-9]/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#25D366] w-full p-5 rounded-sm text-center group transition-all duration-300 hover:bg-[#1eb954] shadow-md flex items-center justify-between px-8"
+            >
+              <div className="flex items-center gap-4">
+                <MessageCircle size={20} className="text-white" />
+                <span className="text-white font-black text-sm uppercase tracking-widest">
+                  WhatsApp Chat
+                </span>
+              </div>
+              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white group-hover:bg-white group-hover:text-[#25D366] transition-all">
+                <span className="text-lg">→</span>
+              </div>
+            </a>
 
-              {/* 4. Email */}
-              <a 
-                href={`mailto:${CONTACT_INFO.email}?subject=Anfrage%20über%20Website`}
-                className="bg-gray-100 w-full p-5 rounded-sm text-center group transition-all duration-300 hover:bg-gray-200 shadow-sm flex items-center justify-between px-8 border border-gray-200"
-              >
-                <div className="flex items-center gap-4">
-                  <Mail size={20} className="text-black" />
-                  <span className="text-black font-black text-sm uppercase tracking-widest">Email schreiben</span>
-                </div>
-                <div className="w-8 h-8 bg-black/5 rounded-full flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all">
-                  <span className="text-lg">→</span>
-                </div>
-              </a>
+            {/* Email */}
+            <a 
+              href={`mailto:${CONTACT_INFO.email}?subject=Anfrage%20über%20Website`}
+              className="bg-gray-100 w-full p-5 rounded-sm text-center group transition-all duration-300 hover:bg-gray-200 shadow-sm flex items-center justify-between px-8 border border-gray-200"
+            >
+              <div className="flex items-center gap-4">
+                <Mail size={20} className="text-black" />
+                <span className="text-black font-black text-sm uppercase tracking-widest">
+                  Email schreiben
+                </span>
+              </div>
+              <div className="w-8 h-8 bg-black/5 rounded-full flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all">
+                <span className="text-lg">→</span>
+              </div>
+            </a>
 
-            </div>
           </div>
         </div>
+      </div>
     </section>
   );
 };
