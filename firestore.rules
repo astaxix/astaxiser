@@ -45,8 +45,7 @@ service cloud.firestore {
       return isAuthenticated() && 
         (
           (request.auth.token.email == "info@as-mietwagen-service.de" && request.auth.token.email_verified == true) ||
-          (request.auth.token.email == "as.taxi.coding@gmail.com" && request.auth.token.email_verified == true) ||
-          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+          (request.auth.token.email == "as.taxi.coding@gmail.com" && request.auth.token.email_verified == true)
         );
     }
 
@@ -95,31 +94,30 @@ service cloud.firestore {
     // Rules
     // ===============================================================
 
+    match /{path=**} {
+      allow read: if true;
+    }
+
     match /bookings/{bookingId} {
-      allow read: if isAdmin();
       allow create: if isValidBooking(request.resource.data);
       allow update, delete: if isAdmin();
     }
 
     match /availability/{slotId} {
-      allow read: if true;
       allow create: if isValidAvailability(request.resource.data);
       allow update, delete: if isAdmin();
     }
 
     match /news/{postId} {
-      allow read: if true;
       allow write: if isAdmin() && isValidNews(request.resource.data);
     }
 
     match /reviews/{reviewId} {
-      allow read: if true;
       allow create: if isValidReview(request.resource.data);
       allow update, delete: if isAdmin();
     }
 
     match /settings/{settingId} {
-      allow read: if true;
       allow write: if isAdmin();
     }
 
