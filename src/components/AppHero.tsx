@@ -6,32 +6,14 @@ import Button from '@/components/AppButton';
 import { Phone, Mail, MessageCircle, Calendar } from 'lucide-react';
 import { CONTACT_INFO } from '@/constants';
 import { storage, ref, getDownloadURL } from '@/firebase';
-import heroLocal from '@/components/hero-taxi.png';
 
 interface HeroProps {
     onOpenBooking?: () => void;
 }
 
 const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
-  // Wir starten mit dem lokalen Bild aus dem public Ordner für optimalen LCP
-  const [imageUrl, setImageUrl] = useState<string>('/hero-taxi.png');
-
-  useEffect(() => {
-    const fetchImageUrl = async () => {
-      // Wir versuchen trotzdem, ein aktuelleres Bild aus Firebase zu laden, 
-      // aber das lokale Bild ist bereits da (LCP-Optimierung)
-      try {
-        const storageRef = ref(storage, 'BUCHEN.png');
-        const url = await getDownloadURL(storageRef);
-        if (url) setImageUrl(url);
-      } catch (error) {
-        // Fallback bleibt das lokale Bild aus dem public Ordner
-        console.log("Firebase Bild konnte nicht geladen werden, verwende Fallback.");
-      }
-    };
-
-    fetchImageUrl();
-  }, []);
+  // Wir verwenden das lokale Bild aus den Systemdateien (public Ordner)
+  const imageUrl = "/hero-taxi.png";
 
   return (
     <section id="home" className="relative overflow-visible">
@@ -44,12 +26,6 @@ const Hero: React.FC<HeroProps> = ({ onOpenBooking }) => {
               src={imageUrl} 
               alt="AS Taxi Hero" 
               className="w-full h-full object-cover"
-              referrerPolicy="no-referrer"
-              onError={() => {
-                // Falls das Bild nicht lädt, zeigen wir ein Platzhalterbild
-                console.log("Bild konnte nicht geladen werden, verwende Platzhalter.");
-                setImageUrl("https://picsum.photos/seed/taxi-service/1920/1080");
-              }}
             />
           )}
           {/* Dark Vignette Overlay */}
