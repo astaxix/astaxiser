@@ -2,8 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, MessageCircle, ArrowLeft, ShieldCheck, Zap, Heart, Clock, CheckCircle } from 'lucide-react';
-import Header from '@/components/AppHeader.tsx';
-import Footer from '@/components/AppFooter.tsx';
+import Header from '@/components/AppHeader';
+import Footer from '@/components/AppFooter';
 import { CONTACT_INFO } from '@/constants';
 
 interface TaxiCareInfoProps {
