@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CONTACT_INFO } from '@/constants';
@@ -129,16 +128,28 @@ const Footer: React.FC<FooterProps> = ({ onOpenImpressum, onOpenDatenschutz }) =
       {/* Bottom Bar */}
       <div className="bg-black py-8 border-t border-white/5">
         <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-700 flex flex-wrap justify-center gap-8">
+          
+          {/* Links/Buttons Links */}
+          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-700 flex flex-wrap justify-center gap-8 md:justify-start">
             <Link to="/#home" className="hover:text-white transition-colors">Start</Link>
             <a href="https://www.google.com/search?q=AS+MIETWAGEN+Bingen+Bewertungen" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Google Bewertungen</a>
             <Link to="/#contact" className="hover:text-white transition-colors">Kontakt</Link>
             <button onClick={onOpenImpressum} className="hover:text-white transition-colors uppercase">Impressum</button>
             <button onClick={onOpenDatenschutz} className="hover:text-white transition-colors uppercase">Datenschutz</button>
           </div>
-          <div className="text-[9px] uppercase tracking-widest text-gray-800 relative">
-            Replicated with precision
+
+          {/* Externer Link Rechts */}
+          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-700 md:text-right">
+            <a 
+              href="https://www.as-autodoktor.de" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="hover:text-white transition-colors uppercase"
+            >
+              Unsere Autodoktor Website
+            </a>
           </div>
+
         </div>
       </div>
     </footer>
