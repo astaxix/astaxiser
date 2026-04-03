@@ -55,7 +55,7 @@ const ServiceLandingPage: React.FC<ServiceLandingPageProps> = ({
             <h2 className="text-secondary font-black text-sm tracking-[0.3em] uppercase mb-4">
               {subtitle}
             </h2>
-            <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-6 leading-none">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-6 leading-none">
               {title}
             </h1>
             <p className="text-gray-300 max-w-2xl mx-auto text-lg font-medium leading-relaxed">

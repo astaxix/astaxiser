@@ -19,7 +19,7 @@ import ServiceLandingPage from '@/components/ServiceLandingPage.tsx';
 import { auth, signInAnonymously } from '@/firebase';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-import { useTracking } from '@/hooks/useTracking';
+import { useTracking, trackEvent } from '@/hooks/useTracking';
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -61,6 +61,13 @@ export default function App() {
     setPreselectedType(type || null);
     setBookingMode(mode);
     setIsBookingOpen(true);
+    
+    // Track events
+    if (mode === 'calculator') {
+      trackEvent('preisrechner_tab');
+    } else {
+      trackEvent('buchen_tab');
+    }
   };
 
   return (
@@ -104,7 +111,7 @@ export default function App() {
             subtitle="Bingen ↔ Region"
             description="Buchen Sie jetzt Ihren Transfer von Bingen zum Flughafen Frankfurt, Hannover oder Berlin. Keine versteckten Kosten, maximaler Komfort."
             image="https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=2000&auto=format&fit=crop"
-            features={["Pünktlicher Service", "Gepäckhilfe inklusive", "Moderne Fahrzeuge", "24/7 Erreichbarkeit"]}
+            features={["Pünktlicher Service", "Gepäckhilfe inklusive", "Moderne Fahrzeuge", "Top Bewertung"]}
             onOpenBooking={() => openBooking('airport')}
           />
         } />
@@ -124,7 +131,7 @@ export default function App() {
             subtitle="Ihr Taxi in Bingen & Region"
             description="Schnell, zuverlässig und rund um die Uhr für Sie da. AS Taxi ist Ihr Partner für alle Fahrten in Bingen am Rhein und Umgebung. Zentrale am Stadtbahnhof."
             image="https://images.unsplash.com/photo-1556122071-e404be7457cc?q=80&w=2000&auto=format&fit=crop"
-            features={["24/7 Erreichbar", "Ortskundige Fahrer", "Kurze Wartezeiten", "Zentrale am Stadtbahnhof"]}
+            features={["Top Service", "Ortskundige Fahrer", "Kurze Wartezeiten", "Zentrale am Stadtbahnhof"]}
             onOpenBooking={() => openBooking()}
           />
         } />

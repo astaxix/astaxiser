@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { db, collection, onSnapshot, query, orderBy } from '@/firebase';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { Loader2, TrendingUp, DollarSign, Calendar, ArrowRight, Eye, Users } from 'lucide-react';
+import { db, collection, onSnapshot, query, orderBy, doc } from '@/firebase';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Cell } from 'recharts';
+import { Loader2, TrendingUp, DollarSign, Calendar, ArrowRight, Eye, Users, Globe } from 'lucide-react';
 
 interface Booking {
   id: string;
@@ -17,9 +17,21 @@ interface Visit {
   timestamp: string;
 }
 
+interface WebsiteStats {
+  homepage?: number;
+  leistungen_page?: number;
+  leistungen_tab?: number;
+  buchen_tab?: number;
+  preisrechner_tab?: number;
+  landing_taxibingen?: number;
+  landing_krankenfahrten?: number;
+  landing_flughafentransfer?: number;
+}
+
 const AdminAnalytics: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [visits, setVisits] = useState<Visit[]>([]);
+  const [websiteStats, setWebsiteStats] = useState<WebsiteStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
 
@@ -34,15 +46,22 @@ const AdminAnalytics: React.FC = () => {
     const unsubscribeVisits = onSnapshot(qVisits, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Visit));
       setVisits(data);
+    });
+
+    const unsubscribeWebsiteStats = onSnapshot(doc(db, 'settings', 'website_stats'), (snapshot) => {
+      if (snapshot.exists()) {
+        setWebsiteStats(snapshot.data() as WebsiteStats);
+      }
       setLoading(false);
     }, (error) => {
-      console.error('Visits onSnapshot error:', error);
+      console.error('WebsiteStats onSnapshot error:', error);
       setLoading(false);
     });
 
     return () => {
       unsubscribeBookings();
       unsubscribeVisits();
+      unsubscribeWebsiteStats();
     };
   }, []);
 
@@ -87,6 +106,21 @@ const AdminAnalytics: React.FC = () => {
     return Object.entries(data).map(([date, values]) => ({ date, ...values })).sort((a, b) => a.date.localeCompare(b.date));
   }, [filteredBookings, filteredVisits]);
 
+  const websiteStatsChartData = useMemo(() => {
+    if (!websiteStats) return [];
+    return [
+      { name: 'Startseite', value: websiteStats.homepage || 0 },
+      { name: 'Leistungen', value: websiteStats.leistungen_page || 0 },
+      { name: 'Buchen Tab', value: websiteStats.buchen_tab || 0 },
+      { name: 'Preisrechner', value: websiteStats.preisrechner_tab || 0 },
+      { name: 'Taxi Bingen', value: websiteStats.landing_taxibingen || 0 },
+      { name: 'Krankenfahrten', value: websiteStats.landing_krankenfahrten || 0 },
+      { name: 'Flughafen', value: websiteStats.landing_flughafentransfer || 0 },
+    ].sort((a, b) => b.value - a.value);
+  }, [websiteStats]);
+
+  const COLORS = ['#f27d26', '#000000', '#4b5563', '#9ca3af', '#d1d5db', '#e5e7eb', '#f3f4f6'];
+
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="animate-spin text-secondary" size={32} /></div>;
 
   return (
@@ -128,9 +162,52 @@ const AdminAnalytics: React.FC = () => {
         </div>
       </div>
 
+      {/* Website Analytics Section */}
+      <div className="bg-white p-6 md:p-10 rounded-[30px] md:rounded-[40px] border border-gray-100 shadow-sm">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-3 bg-secondary/10 rounded-2xl text-secondary">
+            <Globe size={24} />
+          </div>
+          <div>
+            <h4 className="text-xl md:text-2xl font-black tracking-tighter uppercase">Website Analytics</h4>
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Seitenaufrufe & Interaktionen</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="h-64 md:h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={websiteStatsChartData} layout="vertical" margin={{ left: 40 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
+                <XAxis type="number" hide />
+                <YAxis dataKey="name" type="category" tick={{fontSize: 10, fontWeight: 'bold'}} width={100} />
+                <Tooltip />
+                <Bar dataKey="value" radius={[0, 4, 4, 0]} name="Aufrufe">
+                  {websiteStatsChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="space-y-4">
+            {websiteStatsChartData.map((stat, index) => (
+              <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></div>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-600">{stat.name}</span>
+                </div>
+                <span className="text-lg font-black">{stat.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white p-4 md:p-6 rounded-2xl md:rounded-3xl border border-gray-100 shadow-sm">
-          <h4 className="text-base md:text-lg font-black mb-4 md:mb-6">Umsatzverlauf</h4>
+          <h4 className="text-base md:text-lg font-black mb-4 md:mb-6 uppercase tracking-tight">Umsatzverlauf</h4>
           <div className="h-48 md:h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
@@ -145,7 +222,7 @@ const AdminAnalytics: React.FC = () => {
         </div>
 
         <div className="bg-white p-4 md:p-6 rounded-2xl md:rounded-3xl border border-gray-100 shadow-sm">
-          <h4 className="text-base md:text-lg font-black mb-4 md:mb-6">Besucher & Buchungen</h4>
+          <h4 className="text-base md:text-lg font-black mb-4 md:mb-6 uppercase tracking-tight">Besucher & Buchungen</h4>
           <div className="h-48 md:h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>

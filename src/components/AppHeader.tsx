@@ -4,6 +4,7 @@ import { Menu, X, Phone, Calendar } from 'lucide-react';
 import { NAV_ITEMS, CONTACT_INFO } from '@/constants';
 import Button from '@/components/AppButton.tsx';
 import Logo from '@/components/AppLogo.tsx';
+import { trackEvent } from '@/hooks/useTracking';
 
 interface HeaderProps {
   onOpenBooking?: () => void;
@@ -39,6 +40,10 @@ const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenCalculator }) => {
   }, [lastScrollY]);
 
   const handleNavClick = (e: React.MouseEvent, item: any) => {
+    if (item.label === 'LEISTUNGEN') {
+      trackEvent('leistungen_tab');
+    }
+
     if (item.label === 'JETZT BUCHEN') {
       e.preventDefault();
       if (onOpenBooking) onOpenBooking();

@@ -44,7 +44,7 @@ const Footer: React.FC<FooterProps> = ({ onOpenImpressum, onOpenDatenschutz }) =
               <span className="font-bold text-lg uppercase tracking-widest">Öffnungszeiten</span>
               <div className="text-sm font-light mt-2 text-center">
                 <p>Mo-Do: 06:00 - 20:00 Uhr</p>
-                <p>Fr-Sa: 24 Stunden</p>
+                <p>Fr-Sa: Rund um die Uhr</p>
                 <p>So: Ruhetag</p>
                 <p className="text-xs mt-2 italic">Außerhalb: Vorbestellung</p>
               </div>
