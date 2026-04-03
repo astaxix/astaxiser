@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CONTACT_INFO } from '@/constants';
@@ -82,6 +83,14 @@ const Footer: React.FC<FooterProps> = ({ onOpenImpressum, onOpenDatenschutz }) =
               Zu unserem Service gehören u.a. Kurierfahrten, Einkaufsfahrten, Schüler- und Kindertransporte, 
               Krankenfahrten und Flughafentransfer.
             </p>
+            <a 
+              href="https://www.as-autodoktor.de" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center bg-secondary hover:bg-[#d17a1a] text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all mb-10 shadow-lg"
+            >
+              Unsere Autodoktor Website
+            </a>
             <div className="text-[10px] text-gray-700 font-bold uppercase tracking-[0.2em]">
               © {new Date().getFullYear()} | AS Taxi und Mietwagen Service
             </div>
@@ -128,28 +137,16 @@ const Footer: React.FC<FooterProps> = ({ onOpenImpressum, onOpenDatenschutz }) =
       {/* Bottom Bar */}
       <div className="bg-black py-8 border-t border-white/5">
         <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          
-          {/* Links/Buttons Links */}
-          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-700 flex flex-wrap justify-center gap-8 md:justify-start">
+          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-700 flex flex-wrap justify-center gap-8">
             <Link to="/#home" className="hover:text-white transition-colors">Start</Link>
             <a href="https://www.google.com/search?q=AS+MIETWAGEN+Bingen+Bewertungen" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Google Bewertungen</a>
             <Link to="/#contact" className="hover:text-white transition-colors">Kontakt</Link>
             <button onClick={onOpenImpressum} className="hover:text-white transition-colors uppercase">Impressum</button>
             <button onClick={onOpenDatenschutz} className="hover:text-white transition-colors uppercase">Datenschutz</button>
           </div>
-
-          {/* Externer Link Rechts */}
-          <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-700 md:text-right">
-            <a 
-              href="https://www.as-autodoktor.de" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="hover:text-white transition-colors uppercase"
-            >
-              Unsere Autodoktor Website
-            </a>
+          <div className="text-[9px] uppercase tracking-widest text-gray-800 relative">
+            Replicated with precision
           </div>
-
         </div>
       </div>
     </footer>

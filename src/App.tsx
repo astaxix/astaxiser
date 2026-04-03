@@ -15,6 +15,7 @@ import LegalDatenschutz from '@/components/LegalDatenschutz.tsx';
 import PromoPopup from '@/components/AppPromoPopup.tsx';
 import TaxiCarePopup from '@/components/AppTaxiCarePopup.tsx';
 import Preloader from '@/components/AppPreloader.tsx';
+import ServiceLandingPage from '@/components/ServiceLandingPage.tsx';
 import { auth, signInAnonymously } from '@/firebase';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
@@ -97,6 +98,36 @@ export default function App() {
           />
         } />
         <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/flughafentransfer" element={
+          <ServiceLandingPage 
+            title="Flughafentransfer"
+            subtitle="Bingen ↔ Region"
+            description="Buchen Sie jetzt Ihren Transfer von Bingen zum Flughafen Frankfurt, Hannover oder Berlin zum exklusiven Festpreis. Keine versteckten Kosten, maximaler Komfort."
+            image="https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?auto=format&fit=crop&q=80&w=1920"
+            features={["Festpreis-Garantie", "Pünktlicher Service", "Gepäckhilfe inklusive", "Moderne Fahrzeuge"]}
+            onOpenBooking={() => openBooking('airport')}
+          />
+        } />
+        <Route path="/krankenfahrten" element={
+          <ServiceLandingPage 
+            title="Krankenfahrten"
+            subtitle="Sitzend zum Arzt"
+            description="Wir bringen Sie sicher und komfortabel zu Ihren medizinischen Terminen. Ob Dialyse, Bestrahlung oder Arztbesuch – wir sind Ihr zuverlässiger Partner in Bingen."
+            image="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1920"
+            features={["Direktabrechnung mit Kassen", "Hilfsbereite Fahrer", "Sitzendtransport", "Termintreue"]}
+            onOpenBooking={() => openBooking('medical')}
+          />
+        } />
+        <Route path="/taxibingen" element={
+          <ServiceLandingPage 
+            title="Taxi Bingen"
+            subtitle="Ihr Taxi in Bingen & Region"
+            description="Schnell, zuverlässig und rund um die Uhr für Sie da. AS Taxi ist Ihr Partner für alle Fahrten in Bingen am Rhein und Umgebung. Zentrale am Stadtbahnhof."
+            image="https://images.unsplash.com/photo-1556122071-e404be7457cc?auto=format&fit=crop&q=80&w=1920"
+            features={["24/7 Erreichbar", "Ortskundige Fahrer", "Kurze Wartezeiten", "Zentrale am Stadtbahnhof"]}
+            onOpenBooking={() => openBooking()}
+          />
+        } />
       </Routes>
 
       <BookingOverlay 
