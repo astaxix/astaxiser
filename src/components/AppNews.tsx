@@ -80,7 +80,7 @@ const News: React.FC<NewsProps> = ({ isAdmin }) => {
   return (
     <section id="news" className="py-24 bg-[#f8f9fa]">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16 relative">
+        <div className="text-center mb-16 relative flex flex-col md:block items-center">
           <h2 className="text-secondary font-bold text-xs tracking-[0.3em] uppercase mb-4">Neuigkeiten</h2>
           <h3 className="text-4xl font-black text-black mb-4 tracking-tighter">Aktuelles von AS TAXI UND MIETWAGEN SERVICE</h3>
           <div className="w-16 h-1 bg-black mx-auto"></div>
@@ -88,7 +88,7 @@ const News: React.FC<NewsProps> = ({ isAdmin }) => {
           {isAdmin && (
             <button 
               onClick={() => setIsAdding(true)}
-              className="absolute top-0 right-0 p-4 bg-black text-white rounded-2xl hover:bg-secondary transition-all shadow-xl flex items-center gap-2 font-black uppercase tracking-widest text-[10px]"
+              className="mt-8 md:absolute md:top-0 md:right-0 p-4 bg-black text-white rounded-2xl hover:bg-secondary transition-all shadow-xl flex items-center gap-2 font-black uppercase tracking-widest text-[10px]"
             >
               <Plus size={16} /> Beitrag erstellen
             </button>
@@ -109,29 +109,29 @@ const News: React.FC<NewsProps> = ({ isAdmin }) => {
             </div>
           ) : (
             news.map((post) => (
-              <div key={post.id} className="bg-white rounded-[40px] p-10 shadow-sm border border-gray-100 hover:shadow-md transition-shadow relative group">
+              <div key={post.id} className="bg-white rounded-[40px] p-8 md:p-10 shadow-sm border border-gray-100 hover:shadow-md transition-shadow relative group">
                 <div className="flex items-center gap-3 text-secondary mb-6">
                   <Calendar size={16} />
                   <span className="text-[10px] font-black uppercase tracking-widest">
                     {new Date(post.date).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })}
                   </span>
                 </div>
-                <h4 className="text-2xl font-black text-black mb-4 tracking-tighter">{post.title}</h4>
+                <h4 className="text-2xl font-black text-black mb-4 tracking-tighter pr-20">{post.title}</h4>
                 <div className="prose prose-slate max-w-none text-gray-600 leading-relaxed font-medium whitespace-pre-wrap">
                   {post.content}
                 </div>
 
                 {isAdmin && (
-                  <div className="absolute top-6 right-6 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute top-6 right-6 flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                     <button 
                       onClick={() => setEditingPost(post)}
-                      className="p-3 bg-blue-50 text-blue-600 rounded-2xl hover:bg-blue-100 transition-colors"
+                      className="p-2.5 md:p-3 bg-blue-50 text-blue-600 rounded-xl md:rounded-2xl hover:bg-blue-100 transition-colors shadow-sm"
                     >
                       <Edit2 size={18} />
                     </button>
                     <button 
                       onClick={() => handleDelete(post.id)}
-                      className="p-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-100 transition-colors"
+                      className="p-2.5 md:p-3 bg-red-50 text-red-600 rounded-xl md:rounded-2xl hover:bg-red-100 transition-colors shadow-sm"
                     >
                       <Trash2 size={18} />
                     </button>

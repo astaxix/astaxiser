@@ -102,9 +102,9 @@ export default function App() {
           <ServiceLandingPage 
             title="Flughafentransfer"
             subtitle="Bingen ↔ Region"
-            description="Buchen Sie jetzt Ihren Transfer von Bingen zum Flughafen Frankfurt, Hannover oder Berlin zum exklusiven Festpreis. Keine versteckten Kosten, maximaler Komfort."
-            image="https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?auto=format&fit=crop&q=80&w=1920"
-            features={["Festpreis-Garantie", "Pünktlicher Service", "Gepäckhilfe inklusive", "Moderne Fahrzeuge"]}
+            description="Buchen Sie jetzt Ihren Transfer von Bingen zum Flughafen Frankfurt, Hannover oder Berlin. Keine versteckten Kosten, maximaler Komfort."
+            image="https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=2000&auto=format&fit=crop"
+            features={["Pünktlicher Service", "Gepäckhilfe inklusive", "Moderne Fahrzeuge", "24/7 Erreichbarkeit"]}
             onOpenBooking={() => openBooking('airport')}
           />
         } />
@@ -113,7 +113,7 @@ export default function App() {
             title="Krankenfahrten"
             subtitle="Sitzend zum Arzt"
             description="Wir bringen Sie sicher und komfortabel zu Ihren medizinischen Terminen. Ob Dialyse, Bestrahlung oder Arztbesuch – wir sind Ihr zuverlässiger Partner in Bingen."
-            image="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1920"
+            image="https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2000&auto=format&fit=crop"
             features={["Direktabrechnung mit Kassen", "Hilfsbereite Fahrer", "Sitzendtransport", "Termintreue"]}
             onOpenBooking={() => openBooking('medical')}
           />
@@ -123,7 +123,7 @@ export default function App() {
             title="Taxi Bingen"
             subtitle="Ihr Taxi in Bingen & Region"
             description="Schnell, zuverlässig und rund um die Uhr für Sie da. AS Taxi ist Ihr Partner für alle Fahrten in Bingen am Rhein und Umgebung. Zentrale am Stadtbahnhof."
-            image="https://images.unsplash.com/photo-1556122071-e404be7457cc?auto=format&fit=crop&q=80&w=1920"
+            image="https://images.unsplash.com/photo-1556122071-e404be7457cc?q=80&w=2000&auto=format&fit=crop"
             features={["24/7 Erreichbar", "Ortskundige Fahrer", "Kurze Wartezeiten", "Zentrale am Stadtbahnhof"]}
             onOpenBooking={() => openBooking()}
           />

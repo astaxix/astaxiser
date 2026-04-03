@@ -203,7 +203,7 @@ const Guestbook: React.FC<GuestbookProps> = ({ isAdmin }) => {
               <div className="text-center py-12 text-gray-400 font-bold italic">Noch keine Bewertungen vorhanden.</div>
             ) : (
               filteredReviews.map((review) => (
-                <div key={review.id} className={`bg-white border border-gray-100 rounded-[30px] p-8 shadow-sm hover:shadow-md transition-shadow relative group ${review.status === 'pending' ? 'bg-orange-50/30 border-orange-100' : ''}`}>
+                <div key={review.id} className={`bg-white border border-gray-100 rounded-[30px] p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow relative group ${review.status === 'pending' ? 'bg-orange-50/30 border-orange-100' : ''}`}>
                   {review.status === 'pending' && (
                     <div className="absolute -top-3 left-8 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest border border-orange-200">
                       Wartet auf Freigabe
@@ -232,14 +232,14 @@ const Guestbook: React.FC<GuestbookProps> = ({ isAdmin }) => {
                       ))}
                     </div>
                   </div>
-                  <p className="text-gray-600 leading-relaxed font-medium">{review.message}</p>
+                  <p className="text-gray-600 leading-relaxed font-medium pr-12">{review.message}</p>
 
                   {isAdmin && (
-                    <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute top-4 right-4 flex flex-col md:flex-row gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                       {review.status === 'pending' && (
                         <button 
                           onClick={() => handleApprove(review.id)}
-                          className="p-2 bg-green-50 text-green-600 rounded-xl hover:bg-green-100 transition-colors"
+                          className="p-2 bg-green-50 text-green-600 rounded-xl hover:bg-green-100 transition-colors shadow-sm"
                           title="Freigeben"
                         >
                           <CheckCircle size={16} />
@@ -247,13 +247,13 @@ const Guestbook: React.FC<GuestbookProps> = ({ isAdmin }) => {
                       )}
                       <button 
                         onClick={() => setEditingReview(review)}
-                        className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors"
+                        className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors shadow-sm"
                       >
                         <Edit2 size={16} />
                       </button>
                       <button 
                         onClick={() => handleDelete(review.id)}
-                        className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors"
+                        className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors shadow-sm"
                       >
                         <Trash2 size={16} />
                       </button>

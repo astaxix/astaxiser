@@ -18,6 +18,7 @@ const Logo: React.FC<LogoProps> = ({ className = "h-12", variant = 'light', src 
           src={finalSrc} 
           alt="AS TAXI UND MIETWAGEN SERVICE Logo" 
           className="h-full w-auto object-contain"
+          referrerPolicy="no-referrer"
           style={{ 
             imageRendering: 'auto'
           }}

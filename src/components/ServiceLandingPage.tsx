@@ -36,6 +36,9 @@ const ServiceLandingPage: React.FC<ServiceLandingPageProps> = ({
             alt={title} 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
+            onError={(e) => {
+              e.currentTarget.src = `https://picsum.photos/seed/${title}/1920/1080?blur=2`;
+            }}
           />
           <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
         </div>
