@@ -5,6 +5,7 @@ import { NavItem, ServiceItem } from '@/types';
 export const NAV_ITEMS: NavItem[] = [
   { label: 'HOME', href: '/' },
   { label: 'LEISTUNGEN', href: '/leistungen' },
+  { label: 'FOTOGALERIE', href: '/fotogalerie' },
   { label: 'ÜBER UNS', href: '/#about' },
   { label: 'NEWS', href: '/#news' },
   { label: 'GÄSTEBUCH', href: '/#guestbook' },

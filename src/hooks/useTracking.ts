@@ -16,6 +16,7 @@ export function useTracking() {
       else if (path === '/taxibingen') field = 'landing_taxibingen';
       else if (path === '/krankenfahrten') field = 'landing_krankenfahrten';
       else if (path === '/flughafentransfer') field = 'landing_flughafentransfer';
+      else if (path === '/fotogalerie') field = 'gallery_page';
 
       if (field) {
         try {

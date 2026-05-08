@@ -59,6 +59,19 @@
         "lastUpdated": { "type": "string", "format": "date-time" }
       },
       "required": ["totalBookings", "totalVisitors", "lastUpdated"]
+    },
+    "GalleryImage": {
+      "title": "Gallery Image",
+      "description": "An image in the photo gallery.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "url": { "type": "string" },
+        "caption": { "type": "string" },
+        "storagePath": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["url", "storagePath", "createdAt"]
     }
   },
   "firestore": {
@@ -77,6 +90,10 @@
     "/stats": {
       "schema": "Stats",
       "description": "Global application statistics."
+    },
+    "/gallery": {
+      "schema": "GalleryImage",
+      "description": "Collection of gallery images."
     }
   }
 }

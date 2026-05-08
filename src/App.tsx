@@ -16,6 +16,7 @@ import PromoPopup from '@/components/AppPromoPopup.tsx';
 import TaxiCarePopup from '@/components/AppTaxiCarePopup.tsx';
 import Preloader from '@/components/AppPreloader.tsx';
 import ServiceLandingPage from '@/components/ServiceLandingPage.tsx';
+import GalleryPage from '@/components/AppGalleryPage.tsx';
 import { auth, signInAnonymously } from '@/firebase';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
@@ -104,6 +105,7 @@ export default function App() {
             onOpenTaxiCare={() => setIsTaxiCareOpen(true)}
           />
         } />
+        <Route path="/fotogalerie" element={<GalleryPage />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/flughafentransfer" element={
           <ServiceLandingPage 

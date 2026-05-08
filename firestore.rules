@@ -90,6 +90,13 @@ service cloud.firestore {
              data.timestamp is string && data.timestamp.size() > 0 && data.timestamp.size() < 100;
     }
 
+    function isValidGalleryImage(data) {
+      return data.keys().hasAll(['url', 'storagePath', 'createdAt']) &&
+             data.url is string && data.url.size() > 0 &&
+             data.storagePath is string && data.storagePath.size() > 0 &&
+             (!('caption' in data) || data.caption is string);
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -130,6 +137,11 @@ service cloud.firestore {
       allow create: if isValidVisit(request.resource.data);
       allow read, delete: if isAdmin();
       allow update: if false;
+    }
+
+    match /gallery/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin() && (request.method == 'delete' || isValidGalleryImage(request.resource.data));
     }
   }
 }

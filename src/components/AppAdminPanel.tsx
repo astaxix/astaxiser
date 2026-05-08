@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Lock, LogOut, Settings, MessageSquare, Newspaper, ShieldCheck, Calendar as CalendarIcon, ArrowLeft, Loader2, User, Key, BarChart3 } from 'lucide-react';
+import { Lock, LogOut, Settings, MessageSquare, Newspaper, ShieldCheck, Calendar as CalendarIcon, ArrowLeft, Loader2, User, Key, BarChart3, Camera } from 'lucide-react';
 import { auth, signOut, db, doc, onSnapshot, setDoc, signInAnonymously, onAuthStateChanged } from '@/firebase';
 import Guestbook from '@/components/AppGuestbook.tsx';
 import News from '@/components/AppNews.tsx';
 import AdminCalendar from '@/components/AppAdminCalendar.tsx';
 import AdminAnalytics from '@/components/AppAdminAnalytics.tsx';
+import AdminGallery from '@/components/AppAdminGallery.tsx';
 import Button from '@/components/AppButton.tsx';
 import Logo from '@/components/AppLogo.tsx';
 
@@ -19,7 +20,7 @@ const AdminPanel: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState<'news' | 'guestbook' | 'stats' | 'calendar' | 'analytics'>('calendar');
+  const [activeTab, setActiveTab] = useState<'news' | 'guestbook' | 'stats' | 'calendar' | 'analytics' | 'gallery'>('calendar');
   const [googleStats, setGoogleStats] = useState({ rating: 4.9, count: 255 });
   const [isUpdatingStats, setIsUpdatingStats] = useState(false);
 
@@ -296,6 +297,12 @@ const AdminPanel: React.FC = () => {
               <BarChart3 size={18} /> Analyse
             </button>
             <button 
+              onClick={() => setActiveTab('gallery')}
+              className={`w-full flex items-center gap-4 p-4 md:p-5 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[9px] md:text-[10px] transition-all ${activeTab === 'gallery' ? 'bg-black text-white shadow-xl' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
+            >
+              <Camera size={18} /> Galerie
+            </button>
+            <button 
               onClick={() => setActiveTab('stats')}
               className={`w-full flex items-center gap-4 p-4 md:p-5 rounded-xl md:rounded-2xl font-black uppercase tracking-widest text-[9px] md:text-[10px] transition-all ${activeTab === 'stats' ? 'bg-black text-white shadow-xl' : 'bg-white text-gray-400 hover:bg-gray-50'}`}
             >
@@ -317,6 +324,7 @@ const AdminPanel: React.FC = () => {
                   {activeTab === 'news' && <News isAdmin={true} />}
                   {activeTab === 'guestbook' && <Guestbook isAdmin={true} />}
                   {activeTab === 'analytics' && <AdminAnalytics />}
+                  {activeTab === 'gallery' && <AdminGallery />}
                   {activeTab === 'stats' && (
                     <div className="p-6 md:p-10">
                       <h3 className="text-xl md:text-2xl font-black tracking-tighter mb-6 md:mb-8">Google Statistiken</h3>
