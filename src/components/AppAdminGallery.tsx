@@ -48,29 +48,59 @@ const AdminGallery: React.FC = () => {
     setError('');
 
     try {
+      console.log('--- Gallery Upload Started ---');
+      console.log('File:', selectedFile.name, 'Size:', selectedFile.size);
+      
       const timestamp = Date.now();
       const storagePath = `gallery/${timestamp}_${selectedFile.name}`;
       const storageRef = ref(storage, storagePath);
       
-      const snapshot = await uploadBytes(storageRef, selectedFile);
-      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log('Step 1: Uploading to storage path:', storagePath);
+      
+      // Wrap upload in a timeout to prevent infinite "loading"
+      const uploadPromise = uploadBytes(storageRef, selectedFile);
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('TIMEOUT: Upload dauerte zu lange (15s). Prüfen Sie die Firebase Storage Regeln.')), 15000)
+      );
 
+      const snapshot = await Promise.race([uploadPromise, timeoutPromise]) as any;
+      console.log('Step 2: Storage upload SUCCESS');
+      
+      console.log('Step 3: Getting download URL...');
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      console.log('Step 4: Download URL:', downloadURL);
+      
+      console.log('Step 5: Writing to Firestore...');
       await addDoc(collection(db, 'gallery'), {
         url: downloadURL,
         caption: caption,
         createdAt: Timestamp.now(),
         storagePath: storagePath
       });
+      console.log('Step 6: Firestore write SUCCESS');
 
       setSelectedFile(null);
       setCaption('');
+      console.log('--- Gallery Upload Finished Successfully ---');
+      
       // Reset file input
       const fileInput = document.getElementById('gallery-upload') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
       
     } catch (err: any) {
-      console.error('Upload error:', err);
-      setError('Fehler beim Hochladen: ' + err.message);
+      console.error('--- GALLERY UPLOAD FAILED ---');
+      console.error('Error Code:', err.code);
+      console.error('Error Message:', err.message);
+      console.error('Full Error Object:', err);
+      
+      let friendlyMessage = 'Fehler beim Hochladen: ' + err.message;
+      if (err.code === 'storage/unauthorized') {
+        friendlyMessage = 'Fehler: Keine Berechtigung für den Cloud-Speicher. Bitte Admin-Rechte prüfen.';
+      } else if (err.code === 'storage/retry-limit-exceeded') {
+        friendlyMessage = 'Fehler: Zeitüberschreitung. Bitte Internetverbindung prüfen.';
+      }
+      
+      setError(friendlyMessage);
     } finally {
       setIsUploading(false);
     }

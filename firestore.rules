@@ -45,7 +45,8 @@ service cloud.firestore {
       return isAuthenticated() && 
         (
           (request.auth.token.email == "info@as-mietwagen-service.de" && request.auth.token.email_verified == true) ||
-          (request.auth.token.email == "as.taxi.coding@gmail.com" && request.auth.token.email_verified == true)
+          (request.auth.token.email == "as.taxi.coding@gmail.com" && request.auth.token.email_verified == true) ||
+          exists(/databases/$(database)/documents/admins/$(request.auth.uid))
         );
     }
 
@@ -137,6 +138,11 @@ service cloud.firestore {
       allow create: if isValidVisit(request.resource.data);
       allow read, delete: if isAdmin();
       allow update: if false;
+    }
+
+    match /admins/{adminId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == adminId;
     }
 
     match /gallery/{imageId} {

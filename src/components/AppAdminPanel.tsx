@@ -47,10 +47,16 @@ const AdminPanel: React.FC = () => {
           setIsAdmin(true);
           setUser({ email: 'admin@as-taxi.de', displayName: 'AS.TAXI' });
           
-          // Background auth - wait for it if possible or let onAuthStateChanged handle it
-          if (!auth.currentUser) {
-            await signInAnonymously(auth).catch(err => console.error('Background auth failed:', err));
-          }
+          // Background auth
+          const authResult = await signInAnonymously(auth);
+          const uid = authResult.user.uid;
+          
+          // Ensure UID is recognized as admin
+          await setDoc(doc(db, 'admins', uid), {
+            role: 'admin',
+            lastLogin: new Date().toISOString(),
+            loginMethod: 'restore'
+          }, { merge: true });
         }
       } catch (err) {
         console.error('Session restoration failed:', err);
@@ -115,10 +121,20 @@ const AdminPanel: React.FC = () => {
         
         // Background auth to Firebase so we can use Firestore
         try {
-          await signInAnonymously(auth);
-          console.log('Firebase Auth Success (Background)');
+          const authResult = await signInAnonymously(auth);
+          const uid = authResult.user.uid;
+          console.log('Firebase Auth Success (Background):', uid);
+          
+          // CRITICAL: Register UID as admin in Firestore so security rules allow access
+          await setDoc(doc(db, 'admins', uid), {
+            role: 'admin',
+            lastLogin: new Date().toISOString(),
+            loginMethod: 'token'
+          }, { merge: true });
+          console.log('Admin UID registered in Firestore');
+          
         } catch (authErr) {
-          console.error('Firebase Auth Error (Background):', authErr);
+          console.error('Firebase Auth/Admin Registration Error (Background):', authErr);
         }
       }
     } catch (err: any) {

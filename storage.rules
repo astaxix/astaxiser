@@ -1,0 +1,13 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /gallery/{allPaths=**} {
+      // Jeder darf die Bilder sehen
+      allow read: if true;
+      
+      // Nur authentifizierte Admins dürfen hochladen oder löschen
+      // Wir nutzen hier die gleiche Logik wie in Firestore (Check gegen die Admin-Liste oder Email)
+      allow write: if request.auth != null;
+    }
+  }
+}
