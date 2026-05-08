@@ -212,9 +212,10 @@ const AdminGallery: React.FC = () => {
                 />
                 <button 
                   onClick={() => handleDelete(image)}
-                  className="absolute top-2 right-2 p-2 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-700 shadow-lg"
+                  className="absolute top-2 right-2 p-3 bg-red-600 text-white rounded-full transition-all hover:bg-white hover:text-red-600 shadow-xl border-2 border-red-600 z-10"
+                  title="Bild löschen"
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={16} />
                 </button>
                 {image.caption && (
                   <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/60 backdrop-blur-sm text-white text-[8px] font-bold uppercase truncate">
