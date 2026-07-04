@@ -52,12 +52,102 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ url: '/hero-taxi.png' });
     }
 
-    // EMAIL (deaktiviert)
+    // EMAIL API
     if (req.method === 'POST' && req.url?.includes('/api/send-email')) {
-      return res.status(501).json({ 
-        success: false, 
-        message: 'Email service not configured' 
-      });
+      try {
+        const nodemailer = await import('nodemailer');
+        
+        // Setup transporter using env vars
+        const transporter = nodemailer.createTransport({
+          host: process.env.SMTP_HOST,
+          port: parseInt(process.env.SMTP_PORT || '465'),
+          secure: process.env.SMTP_SECURE !== 'false', // true for 465, false for other ports
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        });
+
+        const body = req.body || {};
+        const { type, details, data, distance } = body;
+        
+        const ownerEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
+        
+        if (type === 'booking-owner') {
+          // Send to Owner
+          await transporter.sendMail({
+            from: `"AS.TAXI System" <${ownerEmail}>`,
+            to: ownerEmail,
+            subject: `Neue Buchungsanfrage: ${details.name} - ${details.date}`,
+            text: `
+Neue Buchungsanfrage eingegangen:
+
+Name: ${details.name}
+Telefon: ${details.phone}
+Email: ${details.email}
+
+Abholung: ${details.pickup}
+Ziel: ${details.destination}
+Datum: ${details.date}
+Uhrzeit: ${details.time}
+
+Fahrzeugklasse: ${details.vehicleType}
+Personenanzahl: ${details.passengers}
+Zahlungsart: ${details.paymentMethod}
+Anhänger: ${details.hasTrailer ? 'Ja' : 'Nein'}
+
+Geschätzte Entfernung: ${distance ? distance + ' km' : 'Unbekannt'}
+
+Nachricht/Notizen: ${details.notes || '-'}
+            `.trim()
+          });
+        } else if (type === 'booking-customer') {
+          // Send to Customer
+          await transporter.sendMail({
+            from: `"AS.TAXI Bingen" <${ownerEmail}>`,
+            to: details.email,
+            subject: `Ihre Buchungsanfrage bei AS.TAXI ist eingegangen`,
+            text: `
+Guten Tag ${details.name},
+
+vielen Dank für Ihre Buchungsanfrage. Wir haben die folgenden Daten erhalten:
+
+Abholung: ${details.pickup}
+Ziel: ${details.destination}
+Datum: ${details.date}
+Uhrzeit: ${details.time}
+Fahrzeugklasse: ${details.vehicleType}
+
+Wir werden uns in Kürze mit einer Bestätigung bei Ihnen melden. Der endgültige Fahrpreis wird nach der Fahrt gemäß Taxitarif berechnet.
+
+Mit freundlichen Grüßen,
+Ihr AS.TAXI Bingen Team
+            `.trim()
+          });
+        } else if (type === 'contact') {
+          // Send to Owner
+          await transporter.sendMail({
+            from: `"AS.TAXI Kontakt" <${ownerEmail}>`,
+            to: ownerEmail,
+            subject: `Kontaktanfrage: ${data.subject}`,
+            text: `
+Neue Kontaktanfrage eingegangen:
+
+Name: ${data.name}
+Email: ${data.email}
+Betreff: ${data.subject}
+
+Nachricht:
+${data.message}
+            `.trim()
+          });
+        }
+        
+        return res.status(200).json({ success: true, message: 'Email sent successfully' });
+      } catch (err: any) {
+        console.error('Nodemailer error:', err);
+        return res.status(500).json({ success: false, message: err.message });
+      }
     }
 
     console.log(`Unhandled request: ${req.method} ${req.url}`);
